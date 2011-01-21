@@ -1,6 +1,5 @@
 #!/usr/bin/ruby
-
-FICONFIG_VERSION = '0.1'
+require 'pp'
 
 class String
   def undent
@@ -8,27 +7,58 @@ class String
   end
 end
 
-def usage
-  puts <<-EOS.undent
-    ficonfig: #{FICONFIG_VERSION}
+module Ficonfig
+  VERSION = '0.1'
+
+  def Ficonfig.usage
+    puts <<-EOS.undent
+    ficonfig: #{VERSION}
        ifconfig beautified
   EOS
-end
+  end # def
 
-def ficonfig
-  plain = %x{"ifconfig"}
-  puts plain
-end
+  class Ficonfig::Fi
+    def initialize(str)
+      # Parse the string
+      @name = str[/^[^\s:]+/]
+      one_phy = '[\dA-Fa-f]{2}'
+      @physical = str[/(?:#{one_phy}\:){5}#{one_phy}/]
+    end # def
+
+    def pretty_print(q)
+      puts @name
+      puts @physical
+    end # def
+
+  end # class
+
+  def Ficonfig.ficonfig
+    plain = %x{"ifconfig"} # TODO other arguments to forward?
+    # Create seperate interfaces
+    tmp = ''
+    ifs = []
+    plain.each_line do |ln|
+      if ln.match(/^\S/)
+        ifs << Fi.new(tmp)
+        tmp = ''
+      end
+      tmp += (tmp == '' ? '' : "\n") + ln.strip
+    end
+    ifs << Fi.new(tmp)
+    pp ifs
+  end # def
+end # module
 
 # Parse some special arguments
 case ARGV.first
 when '-h', '--help', '--usage', '-\?', 'help'
-  usage
+  Ficonfig::usage
   exit 0
 when '--version', '-v'
-  puts FICONFIG_VERSION
+  puts ficonfig::VERSION
   exit 0
 when nil
-  ficonfig
+  Ficonfig::ficonfig
+# TODO all other arguments use to configure interfaces
 end
 
