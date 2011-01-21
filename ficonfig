@@ -1,0 +1,34 @@
+#!/usr/bin/ruby
+
+FICONFIG_VERSION = '0.1'
+
+class String
+  def undent
+    gsub(/^.{#{slice(/^ +/).length}}/, '')
+  end
+end
+
+def usage
+  puts <<-EOS.undent
+    ficonfig: #{FICONFIG_VERSION}
+       ifconfig beautified
+  EOS
+end
+
+def ficonfig
+  plain = %x{"ifconfig"}
+  puts plain
+end
+
+# Parse some special arguments
+case ARGV.first
+when '-h', '--help', '--usage', '-\?', 'help'
+  usage
+  exit 0
+when '--version', '-v'
+  puts FICONFIG_VERSION
+  exit 0
+when nil
+  ficonfig
+end
+
