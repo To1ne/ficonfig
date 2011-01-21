@@ -8,7 +8,8 @@ class String
 end
 
 module Ficonfig
-  VERSION = '0.1'
+  VERSION   = '0.1'
+  INDENT    = '     '
 
   def Ficonfig.usage
     puts <<-EOS.undent
@@ -25,27 +26,22 @@ module Ficonfig
       @physical = str[/(?:#{one_phy}\:){5}#{one_phy}/]
     end # def
 
-    def pretty_print(q)
-      puts @name
-      puts @physical
+    def to_s
+      text = "#{@name}\n"
+      text += "#{INDENT} ether #{@physical}\n" if @physical
+      text
     end # def
 
   end # class
 
   def Ficonfig.ficonfig
     plain = %x{"ifconfig"} # TODO other arguments to forward?
-    # Create seperate interfaces
-    tmp = ''
+    # Split the interfaces
     ifs = []
-    plain.each_line do |ln|
-      if ln.match(/^\S/)
-        ifs << Fi.new(tmp)
-        tmp = ''
-      end
-      tmp += (tmp == '' ? '' : "\n") + ln.strip
-    end
-    ifs << Fi.new(tmp)
-    pp ifs
+    plain.split(/\n\S/).each do |ln|
+      ifs << Fi.new(ln)
+    end # each
+    puts ifs.to_s
   end # def
 end # module
 
