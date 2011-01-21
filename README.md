@@ -1,6 +1,11 @@
 ficonfig
 ========
 ifconfig beautified
+
+Usage
+-----
+Run `ficonfig` just like you would run `[ifconfig](http://linux.die.net/man/8/ifconfig)`.
+
 About
 -----
 `ficonfig` converts this:
@@ -40,7 +45,3 @@ How
 ---
 `ficonfig` is just a simple Ruby scripts that runs `ifconfig` and
 reformats its output.
-
-Usage
------
-Run `ficonfig` just like you would run `ifconfig`.
