@@ -26,9 +26,15 @@ module Ficonfig
       @physical = str[/(?:#{one_phy}\:){5}#{one_phy}/]
     end # def
 
+    def colorize(text, color_code)
+      "\e[#{color_code}m#{text}\e[0m"
+    end
+    def red(text);   colorize(text, 31); end
+    def green(text); colorize(text, 32); end
+
     def to_s
-      text = "#{@name}\n"
-      text += "#{INDENT} ether #{@physical}\n" if @physical
+      text = green(@name) + "\n"
+      text += INDENT + "physical: " + red(@physical) + "\n" if @physical
       text
     end # def
 
