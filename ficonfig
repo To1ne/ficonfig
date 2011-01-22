@@ -25,14 +25,14 @@ class String
        :magenta         => 35,
        :cyan            => 36,
        :white           => 37,
-       :on_black        => 40,
-       :on_red          => 41,
-       :on_green        => 42,
-       :on_yellow       => 43,
-       :on_blue         => 44,
-       :on_magenta      => 45,
-       :on_cyan         => 46,
-       :on_white        => 47,
+       :bg_black        => 40,
+       :bg_red          => 41,
+       :bg_green        => 42,
+       :bg_yellow       => 43,
+       :bg_blue         => 44,
+       :bg_magenta      => 45,
+       :bg_cyan         => 46,
+       :bg_white        => 47,
     ]
   def ansi_escape(key)
     "\e[#{ANSI_ESC[key]}m#{to_s}\e[0m"
@@ -59,15 +59,23 @@ module Ficonfig
 
   class Ficonfig::Fi
     def initialize(str)
-      # Parse the string
+      # Name (mandatory)
       @name = str[/^[^\s:]+/]
+      # HWaddr
       one_hex = '[\dA-Fa-f]{2}'
       @hwaddr = str[/(?:#{one_hex}\:){5}#{one_hex}/]
+      # inet (v4)
+      one_oct = '(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))'
+      @inet = str[/(?:#{one_oct}\.){3}#{one_oct}/]
+      # inet (v6)
+      @inet6 = nil # TODO
     end # def
 
     def to_s
-      text = @name.green + "\n"
-      text += INDENT + "HWaddr: " + @hwaddr.red + "\n" if @hwaddr
+      text = @name.magenta + "\n"
+      text += INDENT + "HWaddr: " + @hwaddr.cyan + "\n" if @hwaddr
+      text += INDENT + "inet:   " + @inet.yellow + "\n" if @inet
+      text += INDENT + "inet6:  " + @inet6.yellow + "\n" if @inet6
       text + "\n"
     end # def
 
