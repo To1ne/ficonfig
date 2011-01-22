@@ -47,8 +47,11 @@ class String
 end
 
 module Ficonfig
-  VERSION   = '0.1'
-  INDENT    = '     '
+  VERSION      = '0.1'
+  INDENT       = '     '
+  ONE_HEX      = '[\dA-Fa-f]{2}'
+  ONE_OCTAL    = '(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))'
+  IPV6_REGEX   = ''
 
   def Ficonfig.usage
     puts <<-EOS.undent
@@ -62,13 +65,11 @@ module Ficonfig
       # Name (mandatory)
       @name = str[/^[^\s:]+/]
       # HWaddr
-      one_hex = '[\dA-Fa-f]{2}'
-      @hwaddr = str[/(?:#{one_hex}\:){5}#{one_hex}/]
+      @hwaddr = str[/(?:#{ONE_HEX}\:){5}#{ONE_HEX}/]
       # inet (v4)
-      one_oct = '(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))'
-      @inet = str[/(?:#{one_oct}\.){3}#{one_oct}/]
+      @inet = str[/(?:#{ONE_OCTAL}\.){3}#{ONE_OCTAL}/]
       # inet (v6)
-      @inet6 = nil # TODO
+      @inet6 = str[/#{IPV6_REGEX}/]
     end # def
 
     def to_s
