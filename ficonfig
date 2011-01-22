@@ -34,19 +34,15 @@ class String
        :on_cyan         => 46,
        :on_white        => 47,
     ]
-  def ansi_escape(name)
-    sym = namef.to_sym
-    if !ANSI_ESC.has_key?(sym)
-      raise ArgumentError
-    end
-    "\e[#{ANSI_ESC[sym]}m#{to_s}\e[0m"
+  def ansi_escape(key)
+    "\e[#{ANSI_ESC[key]}m#{to_s}\e[0m"
   end
   def method_missing(meth, *args, &block)
-    begin
-      ansi_escape(meth)
-    rescue ArgumentError
+    key = meth.to_sym
+    if !ANSI_ESC.has_key?(key)
       raise NoMethodError
     end
+    ansi_escape(key)
   end
 end
 
@@ -65,13 +61,13 @@ module Ficonfig
     def initialize(str)
       # Parse the string
       @name = str[/^[^\s:]+/]
-      one_phy = '[\dA-Fa-f]{2}'
-      @physical = str[/(?:#{one_phy}\:){5}#{one_phy}/]
+      one_hex = '[\dA-Fa-f]{2}'
+      @hwaddr = str[/(?:#{one_hex}\:){5}#{one_hex}/]
     end # def
 
     def to_s
       text = @name.green + "\n"
-      text += INDENT + "physical: " + @physical.red + "\n" if @physical
+      text += INDENT + "HWaddr: " + @hwaddr.red + "\n" if @hwaddr
       text + "\n"
     end # def
 
