@@ -35,7 +35,7 @@ class String
        :on_white        => 47,
     ]
   def ansi_escape(name)
-    sym = name.to_sym
+    sym = namef.to_sym
     if !ANSI_ESC.has_key?(sym)
       raise ArgumentError
     end
