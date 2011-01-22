@@ -15,7 +15,7 @@ module Ficonfig
     puts <<-EOS.undent
     ficonfig: #{VERSION}
        ifconfig beautified
-  EOS
+    EOS
   end # def
 
   class Ficonfig::Fi
@@ -35,7 +35,13 @@ module Ficonfig
   end # class
 
   def Ficonfig.ficonfig
-    plain = %x{"ifconfig"} # TODO other arguments to forward?
+    if ARGV.size > 0
+      puts "ficonfig does not support arguments (yet)"
+      # TODO fix this
+      system "ifconfig #{ARGV}"
+      return
+    end # if
+    plain = %x{"ifconfig"}
     # Split the interfaces
     ifs = []
     plain.split(/\n\S/).each do |ln|
@@ -47,16 +53,15 @@ end # module
 
 # Parse some special arguments
 case ARGV.first
-when '-h', '--help', '--usage', '-\?', 'help'
+when '-h', '--help', '--usage', 'help'
   Ficonfig::usage
   exit 0
 when '--version', '-v'
   puts Ficonfig::VERSION
   exit 0
-when nil
-  Ficonfig::ficonfig
-# TODO all other arguments use to configure interfaces
 end
+
+Ficonfig::ficonfig
 
 # Example output of ifconfig below
 __END__
