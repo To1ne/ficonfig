@@ -1,10 +1,17 @@
 #!/usr/bin/ruby
 require 'pp'
 
+# extend String
 class String
   def undent
     gsub(/^.{#{slice(/^ +/).length}}/, '')
   end
+  def colorize(color_code)
+    "\e[#{color_code}m#{to_s}\e[0m"
+  end
+  def red;   colorize(31); end
+  def green; colorize(32); end
+
 end
 
 module Ficonfig
@@ -26,16 +33,10 @@ module Ficonfig
       @physical = str[/(?:#{one_phy}\:){5}#{one_phy}/]
     end # def
 
-    def colorize(text, color_code)
-      "\e[#{color_code}m#{text}\e[0m"
-    end
-    def red(text);   colorize(text, 31); end
-    def green(text); colorize(text, 32); end
-
     def to_s
-      text = green(@name) + "\n"
-      text += INDENT + "physical: " + red(@physical) + "\n" if @physical
-      text
+      text = @name.green + "\n"
+      text += INDENT + "physical: " + @physical.red + "\n" if @physical
+      text + "\n"
     end # def
 
   end # class
