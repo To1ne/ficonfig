@@ -57,12 +57,13 @@ end
 module Ficonfig
   VERSION         = "0.1"
   INDENT          = "     "
-  REGEX_HEX_1     = '[\dA-Fa-f]{2}'
-  REGEX_HWADDR    = "(?:#{REGEX_HEX_1}\:){5}#{REGEX_HEX_1}"
+  REGEX_HEX       = "[\\dA-Fa-f]"
+  REGEX_HEX_1     = "(?:#{REGEX_HEX}){2}"
+  REGEX_HWADDR    = "(?:#{REGEX_HEX_1}\\:){5}#{REGEX_HEX_1}"
   REGEX_OCTAL_1   = "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))"
-  REGEX_HEX_4     = "0x(?:#{REGEX_HEX_1}){4}"
+  REGEX_HEX_4     = "0x(?:#{REGEX_HEX}){8}"
   REGEX_IPV4      = "(?:#{REGEX_OCTAL_1}\.){3}#{REGEX_OCTAL_1}"
-  REGEX_IPV6      = "TODO"
+  REGEX_IPV6      = "(?:(?:#{REGEX_HEX}{0,4})\:){7}#{REGEX_HEX}{0,4}"
 
   def Ficonfig.usage
     puts <<-EOS.undent
