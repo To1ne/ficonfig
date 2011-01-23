@@ -34,24 +34,34 @@ class String
        :bg_cyan         => 46,
        :bg_white        => 47,
     ]
-  def ansi_escape(key)
-    "\e[#{ANSI_ESC[key]}m#{to_s}\e[0m"
+  def ansi_escape(*keys)
+    str = to_s
+    keys.each do |key|
+      key = key.to_sym  # ensure it is a symbol
+      if !ANSI_ESC.has_key?(key)
+        raise ArgumentError
+      end
+      str = "\e[#{ANSI_ESC[key]}m#{str}"
+    end
+    str + (0 < keys.size ? "\e[0m" : '')
   end
   def method_missing(meth, *args, &block)
-    key = meth.to_sym
-    if !ANSI_ESC.has_key?(key)
+    begin
+      ansi_escape(meth)
+    rescue ArgumentError
       raise NoMethodError
     end
-    ansi_escape(key)
   end
 end
 
 module Ficonfig
-  VERSION      = '0.1'
-  INDENT       = '     '
-  ONE_HEX      = '[\dA-Fa-f]{2}'
-  ONE_OCTAL    = '(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))'
-  IPV6_REGEX   = ''
+  VERSION         = "0.1"
+  INDENT          = "     "
+  REGEX_ONE_HEX   = '[\dA-Fa-f]{2}'
+  REGEX_HWADDR    = "(?:#{REGEX_ONE_HEX}\:){5}#{REGEX_ONE_HEX}"
+  REGEX_ONE_OCTAL = "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))"
+  REGEX_IPV4      = "(?:#{REGEX_ONE_OCTAL}\.){3}#{REGEX_ONE_OCTAL}"
+  REGEX_IPV6      = ""
 
   def Ficonfig.usage
     puts <<-EOS.undent
@@ -65,18 +75,20 @@ module Ficonfig
       # Name (mandatory)
       @name = str[/^[^\s:]+/]
       # HWaddr
-      @hwaddr = str[/(?:#{ONE_HEX}\:){5}#{ONE_HEX}/]
-      # inet (v4)
-      @inet = str[/(?:#{ONE_OCTAL}\.){3}#{ONE_OCTAL}/]
-      # inet (v6)
-      @inet6 = str[/#{IPV6_REGEX}/]
+      @hwaddr = str[/#{REGEX_HWADDR}/]
+      # IP (v4) addresses
+      @ipv4    = str[/#{REGEX_IPV4}/]
+      @maskv4  = str[/#{REGEX_IPV4}/]
+      @bcastv4 = str[/#{REGEX_IPV4}/]
+      # IP (v6)
+      @ipv6 = str[/#{REGEX_IPV6}/]
     end # def
 
     def to_s
       text = @name.magenta + "\n"
       text += INDENT + "HWaddr: " + @hwaddr.cyan + "\n" if @hwaddr
-      text += INDENT + "inet:   " + @inet.yellow + "\n" if @inet
-      text += INDENT + "inet6:  " + @inet6.yellow + "\n" if @inet6
+      text += INDENT + "IP:     " + @ipv4.yellow + " Bcast: " + @bcastv4.yellow  + " Mask: " + @maskv4.yellow + "\n" if @ipv4
+      text += INDENT + "IPv6:   " + @ipv6.yellow + "\n" if @ipv6
       text + "\n"
     end # def
 
