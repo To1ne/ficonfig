@@ -104,7 +104,7 @@ module Ficonfig
     plain = %x{"ifconfig"}
     # Split the interfaces
     ifs = []
-    plain.split(/\n\S/).each do |ln|
+    plain.split(/\n\b/).each do |ln|
       ifs << Fi.new(ln)
     end # each
     puts ifs.to_s
