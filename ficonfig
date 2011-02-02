@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 require 'pp'
 
 # extend String
@@ -69,6 +69,12 @@ module Ficonfig
     puts <<-EOS.undent
     ficonfig: #{VERSION}
        ifconfig beautified
+
+    Usage:
+       ficonfig [parameters] [interface]
+
+       --no-color
+          Will show the output without colors.
     EOS
   end # def
 
