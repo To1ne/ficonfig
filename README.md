@@ -4,7 +4,7 @@ ifconfig beautified
 
 Usage
 -----
-Run `ficonfig` just like you would run `[ifconfig](http://linux.die.net/man/8/ifconfig)`.
+Run `ficonfig` just like you would run [`ifconfig`](http://linux.die.net/man/8/ifconfig).
 
 About
 -----
@@ -39,7 +39,32 @@ About
     	inet 192.168.58.1 netmask 0xffffff00 broadcast 192.168.58.255
 
 to this:
-    TODO
+    lo0
+         IP:     127.0.0.1 Mask: 0xff000000 Bcast:
+
+    gif0
+
+    stf0
+
+    en0
+         HWaddr: 00:23:df:9f:b7:02
+
+    en1
+         HWaddr: 00:24:36:b0:b7:4f
+         IP:     192.168.2.101 Mask: 0xffffff00 Bcast: 192.168.2.255
+         IPv6:   2002:d576:1d5a:1234:224:36ff:feb0:b74f
+
+    fw0
+         HWaddr: 00:23:df:ff:fe:9f
+         IPv6:   00:23:df:ff:fe:9f:b7:02
+
+    vmnet8
+         HWaddr: 00:50:56:c0:00:08
+         IP:     192.168.207.1 Mask: 0xffffff00 Bcast: 192.168.207.255
+
+    vmnet1
+         HWaddr: 00:50:56:c0:00:01
+         IP:     192.168.58.1 Mask: 0xffffff00 Bcast: 192.168.58.255
 
 How
 ---
